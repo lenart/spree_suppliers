@@ -1,0 +1,12 @@
+= render :partial => 'spree/admin/shared/configuration_menu'
+= render :partial => 'spree/admin/shared/product_sub_menu'
+= render :partial => 'spree/shared/error_messages', :locals => { :target => @supplier }
+
+- content_for :page_title do
+  = t(:new_supplier)
+
+= form_for [:admin, @supplier] do |f|
+  %fieldset
+    %legend= t(:new_supplier)
+    = render :partial => 'form', :locals => { :f => f }
+    = render :partial => 'spree/admin/shared/new_resource_links'

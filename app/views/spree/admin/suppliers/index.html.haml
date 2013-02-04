@@ -1,0 +1,40 @@
+= render :partial => 'spree/admin/shared/configuration_menu'
+= render :partial => 'spree/admin/shared/product_sub_menu'
+
+- content_for :page_title do
+  = t(:listing_suppliers)
+
+- content_for :page_actions do
+  %div.toolbar{"data-hook" => "toolbar"}
+    %ul.actions.header-action-links.inline-menu
+      %li#new_supplier_link
+        = button_link_to t(:new_supplier), new_object_url, { :remote => false, :icon => 'icon-plus', :id => 'admin_new_supplier' }
+
+- if @collection.any?
+  %table#listing_suppliers.index
+
+    %colgroup
+      %col{:style => "width: 15%;"}
+      %col{:style => "width: 20%;"}
+      %col{:style => "width: 50%;"}
+      %col{:style => "width: 15%;"}
+    %thead
+      %tr{"data-hook" => "admin_products_index_headers"}
+        %th= t(:supplier_name)
+        %th= t(:supplier_email)
+        %th= t(:supplier_description)
+        %th.actions
+
+    %tbody
+      - @collection.each do |supplier|
+        %tr{ class: cycle('odd', 'even') }
+          %td.align-center= link_to supplier.try(:name), spree.edit_admin_supplier_path(supplier)
+          %td.align-center= mail_to supplier.email
+          %td.align-center= supplier.description rescue ''
+          %td.actions{"data-hook" => "admin_products_index_row_actions"}
+            = link_to_edit supplier, no_text: true, class: 'edit'
+            = link_to_delete supplier, no_text: true
+
+- else
+  .no-objects-found
+    = t(:no_results)

@@ -1,0 +1,11 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  back_to_suppliers_list: "Back to Suppliers List"
+  listing_suppliers: "Suppliers"
+  new_supplier: "New Supplier"
+  editing_supplier: "Edit Supplier"
+  supplier_name: "Name"
+  supplier_email: "E-mail"
+  supplier_description: "Description"

@@ -1,0 +1,13 @@
+.row{"data-hook" => "admin_state_form_fields"}
+  .alpha.six.columns
+    = f.field_container :name do
+      = f.label :name, t(:supplier_name)
+      = f.text_field :name, :class => 'fullwidth'
+    = f.field_container :email do
+      = f.label :email, t(:supplier_email)
+      = f.text_field :email, :class => 'fullwidth'
+  .omega.six.columns
+    = f.field_container :description do
+      = f.label :description, t(:description)
+      = f.text_area :description, {:rows => 13, :class => 'fullwidth'}
+      = f.error_message_on :description
