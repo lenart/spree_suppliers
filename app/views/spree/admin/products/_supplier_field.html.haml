@@ -1,0 +1,4 @@
+= f.field_container :supplier do
+  = f.label :supplier, raw(t(:supplier_name) + content_tag(:span, ' *', :class => "required"))
+  = f.collection_select(:supplier_id, Spree::Supplier.all, :id, :name, { :include_blank => 'None' }, { :class => 'select2' })
+  = f.error_message_on :supplier
