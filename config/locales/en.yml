@@ -6,6 +6,6 @@ en:
   listing_suppliers: "Suppliers"
   new_supplier: "New Supplier"
   editing_supplier: "Edit Supplier"
-  supplier_name: "Name"
-  supplier_email: "E-mail"
+  supplier_name: "Supplier Name"
+  supplier_email: "Supplier email"
   supplier_description: "Description"
