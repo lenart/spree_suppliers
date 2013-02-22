@@ -1,0 +1,125 @@
+- content_for :page_title do
+  Popis naročenih izdelkov
+
+- content_for :page_actions do
+  %div.toolbar{"data-hook" => "toolbar"}
+    %ul.actions.header-action-links.inline-menu
+      %li#new_supplier_link
+        = button_link_to t(:download_csv), "#", { :icon => 'icon-download-alt' }
+
+- content_for :table_filter_title do
+  = t(:search)
+
+- content_for :table_filter do
+  %div{"data-hook"=>"admin_suppliers_reports_search"}
+    = search_form_for [:admin, @search], :url => suppliers_orders_admin_reports_url do |f|
+      .field-block.alpha.four.columns
+        .date-range-filter.field
+          = label_tag nil, t(:date_range)
+          .date-range-fields
+            = f.text_field :completed_at_gt, :class => 'datepicker datepicker-from', :value => params[:q][:completed_at_gt], :placeholder => t(:start)
+            %span.range-divider
+              %i.icon-arrow-right
+            = f.text_field :completed_at_lt, :class => 'datepicker datepicker-to', :value => params[:q][:completed_at_lt], :placeholder => t(:stop)
+
+      %div.four.columns
+        .field
+          = label_tag nil, t(:order_number)
+          = # f.text_field :number_cont
+          = text_field_tag "q[order_number_gt]", @starting_order.try(:number)
+
+      .clear
+      .form-buttons.actions.filter-actions
+        = button t(:search), 'icon-search'
+
+
+%div
+  %strong Datum izpiska:
+  = Date.today
+
+  - if @starting_order
+    %p
+      Od naročila št.
+      %strong= @starting_order.number
+      dalje
+  - else
+    %p
+      - unless params[:q][:completed_at_gt].blank? && params[:q][:completed_at_lt].blank?
+        %strong Naročila
+        - unless params[:q][:completed_at_gt].blank?
+          od
+          = params[:q][:completed_at_gt]
+        - unless params[:q][:completed_at_lt].blank?
+          do
+          = params[:q][:completed_at_lt]
+
+
+- if @product_quantities.empty?
+  .no-objects-found
+    = t(:no_results)
+- else
+  - @product_quantities.each do |supplier_id, product_pairs|
+    %h3= Spree::Supplier.where(id: supplier_id).pluck(:name).first
+    %table.index
+      %colgroup
+        %col{:style => ""}
+        %col{:style => "width: 10%;"}
+        %col{:style => "width: 10%;"}
+        %col{:style => "width: 10%;"}
+        %col{:style => "width: 10%;"}
+      %thead
+        %tr
+          %th Izdelek
+          %th Nensi
+          %th Proizvajalec
+          %th DDV
+          %th Količina
+      %tbody
+        - product_pairs.each_pair do |pid, qty|
+          - product = Spree::Product.find(pid)
+          %tr{:class => "#{cycle('odd', 'even')}"}
+            %td= product.name
+            %td
+            %td
+            %td
+            %td= qty
+    - reset_cycle
+
+
+%div{style: 'margin-top: 100px'}
+
+%h2 Naročila (debug only)
+%p
+  Seznam vseh narocenih izdelkov, ki ustrezajo kriterijem.
+
+- if @orders.any?
+  %table.index
+    %colgroup
+      %col{:style => "width: 10%;"}
+      %col{:style => "width: 10%;"}
+      %col{:style => "width: 10%;"}
+      %col{:style => ""}
+      %col{:style => "width: 10%;"}
+      %col{:style => "width: 10%;"}
+    %thead
+      %tr
+        %th= t(:completed_at)
+        %th= sort_link @search, :number, t(:number, :scope => 'activerecord.attributes.spree/order')
+        %th= t(:status)
+        %th= t(:product)
+        %th= t(:supplier)
+
+    %tbody
+    - @orders.each do |order|
+      - order.products.each do |product|
+        %tr{:class => "state-#{order.state.downcase} #{cycle('odd', 'even')}"}
+          %td= order.try(:completed_at)
+          %td= link_to order.number, admin_order_path(order)
+          %td.align-center
+            %span{:class => "state #{order.state.downcase}"}= t("order_state.#{order.state.downcase}")
+          %td.align-center
+            = product.try(:name)
+          %td.align-center
+            = product.supplier.try(:name)
+          %td.actions.align-center{"data-hook" => "admin_orders_index_row_actions"}
+            = link_to_edit_url edit_admin_order_path(order), :title => "admin_edit_#{dom_id(order)}", :no_text => true
