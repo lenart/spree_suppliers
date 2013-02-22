@@ -66,20 +66,17 @@
         %col{:style => "width: 10%;"}
         %col{:style => "width: 10%;"}
         %col{:style => "width: 10%;"}
-        %col{:style => "width: 10%;"}
       %thead
         %tr
           %th Izdelek
           %th Nensi
           %th Proizvajalec
-          %th DDV
           %th Količina
       %tbody
         - product_pairs.each_pair do |pid, qty|
           - product = Spree::Product.find(pid)
           %tr{:class => "#{cycle('odd', 'even')}"}
             %td= product.name
-            %td
             %td
             %td
             %td= qty
