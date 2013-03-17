@@ -35,7 +35,7 @@
 
 
 %div
-  %strong Datum izpiska:
+  %h2 Datum izpiska:
   = Date.today
 
   - if @starting_order
@@ -60,19 +60,17 @@
     = t(:no_results)
 - else
   - @product_quantities.each do |supplier_id, product_pairs|
-    = content_tag :div, nil, { style: "margin-bottom: 40px" } do
+    = content_tag :div, nil, { style: "margin-bottom: 100px" } do
       %h3= Spree::Supplier.where(id: supplier_id).pluck(:name).first
       %table.index
         %colgroup
           %col{:style => ""}
           %col{:style => "width: 10%;"}
           %col{:style => "width: 10%;"}
-          %col{:style => "width: 10%;"}
         %thead
           %tr
             %th Izdelek
             %th Nensi
-            %th Proizvajalec
             %th Količina
         %tbody
           - product_pairs.each_pair do |pid, qty|
@@ -80,36 +78,14 @@
             %tr{:class => "#{cycle('odd', 'even')}"}
               %td= product.name
               %td
-              %td
               %td.quantity= qty
       - reset_cycle
-      %p
-        = button_link_to "Dodaj izdelek", "#", { :icon => 'icon-plus', "data-hook" => "add_product_supplier_index" }
-        = button_link_to "Pripravi email sporočilo", "#", { class: 'align-right', :icon => 'icon-email', "data-hook" => "send_product_supplier_email" }
 
+      = # button_link_to "Dodaj izdelek", "#", { :icon => 'icon-plus', "data-hook" => "add_product_supplier_index" }
+      = render partial: "new_product"
 
-:javascript
-  $().ready(function() {
-    // Should we really need we could try to get correct classname for tr (odd, even)
-    var emptyrow = $("<tr class=''><td>{{product_name}}</td><td></td><td></td><td>{{number}}</td></tr>");
-    var inputfield = $("<input type='text' value='' id='test' />");
-
-    $('[data-hook="add_product_supplier_index"]').click(function() {
-      var table = $(this).parent().siblings('table.index').children('tbody');
-      table.append(emptyrow.clone());
-      return false;
-    })
-
-    $('table.index td.quantity').click(function() {
-      var field = inputfield.clone();
-      field.val($(this).html());
-      $(this).html(field)
-      // Cannot set focus on the input field
-      //setTimeout(function() { f.focus(); }, 100);
-    })
-  })
-
-
+- # Include template for autocomplete fields
+= render :partial => "spree/admin/variants/autocomplete", :formats => :js
 
 %div{style: 'margin-top: 100px'}
 
