@@ -3,6 +3,7 @@ Spree::Admin::ReportsController.class_eval do
 
   before_filter :kludge_suppliers
   
+  # A dirty way to add this report to the list of Reports
   def kludge_suppliers
     return if Spree::Admin::ReportsController::AVAILABLE_REPORTS.has_key?(:suppliers_orders)
     Spree::Admin::ReportsController::AVAILABLE_REPORTS.merge!({
@@ -31,7 +32,10 @@ Spree::Admin::ReportsController.class_eval do
     @search = Spree::Order.ransack(params[:q])
     @orders = @search.result(:uniq => true)
 
-    # Get the suppliers and count products quantity for each
+    # Loop through scoped orders, get the suppliers and count products quantity for each
+    # Idea for refactoring - make a service object
+    #   @quantities = SupplierProductCounter.new @orders
+    #
     supplier_ids = []
     @product_quantities = {}
 

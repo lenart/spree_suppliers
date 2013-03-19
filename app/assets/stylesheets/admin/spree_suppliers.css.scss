@@ -1,0 +1,22 @@
+/*
+ *= require admin/spree_core
+*/
+
+.add-line-item {
+  fieldset {
+    padding: 10px 0;
+
+    .field {
+      margin-bottom: 0;
+      
+      input[type="text"], input[type="number"] {
+        width: 100%;
+      }     
+    }
+    .actions {
+      .button {
+        margin-top: 28px;
+      }
+    }
+  }
+}

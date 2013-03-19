@@ -60,7 +60,7 @@
     = t(:no_results)
 - else
   - @product_quantities.each do |supplier_id, product_pairs|
-    = content_tag :div, nil, { style: "margin-bottom: 100px" } do
+    = content_tag :div, class: 'supplier_products_table', style: "margin-bottom: 100px" do
       %h3= Spree::Supplier.where(id: supplier_id).pluck(:name).first
       %table.index
         %colgroup
@@ -77,15 +77,24 @@
             - product = Spree::Product.find(pid)
             %tr{:class => "#{cycle('odd', 'even')}"}
               %td= product.name
-              %td
+              %td= product.sku
               %td.quantity= qty
       - reset_cycle
 
-      = # button_link_to "Dodaj izdelek", "#", { :icon => 'icon-plus', "data-hook" => "add_product_supplier_index" }
-      = render partial: "new_product"
+      = render partial: "new_product_row_form", locals: { supplier_id: supplier_id }
 
 - # Include template for autocomplete fields
-= render :partial => "spree/admin/variants/autocomplete", :formats => :js
+= render :partial => "spree/admin/variants/autocomplete", :formats => [:js]
+
+
+%script#suppliers-new-product-row{type: 'text/template'}
+  %tr
+    %td {{name}}
+    %td {{sku}}
+    %td.quantity {{qty}}
+
+
+
 
 %div{style: 'margin-top: 100px'}
 
