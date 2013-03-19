@@ -68,7 +68,7 @@ class SuppliersEmailReport
   parseTableRow: (row) ->
     cells = row.children
     product =
-      name: cells[0].innerHTML
+      name: $('<div/>').html(cells[0].innerHTML).text() # decode HTML
       sku:  cells[1].innerHTML
       qty:  cells[2].innerHTML
 
@@ -83,5 +83,5 @@ class SuppliersEmailReport
     for product in @products
       order_text += @template(product)
     
-    @textarea.val order_text
+    @$textarea.val $('<div/>').html(order_text).text() # decode HTML
 
