@@ -36,7 +36,13 @@ jQuery ->
     name = $fieldset.data("name")
     qty = $fieldset.find('[data-hook="add_quantity"] input').val()
 
+    # If no product was chosen from dropdown sku will not exist and we shouldn't add anything
     return false unless sku
+
+    # Hide email content if visible
+    textarea = $(this).parents('.supplier_products_table').find('[data-hook="email_content"]')
+    textarea.val('')
+    textarea.slideUp() if textarea.is(':visible')
 
     $table = $(this).parents('.supplier_products_table').find('tbody')
     $table.append(new_row_template({name: name, sku: sku, qty: qty}))
@@ -59,8 +65,8 @@ class SuppliersEmailReport
     @products = []
 
     @$table = table
-    @textarea = @$table.find('[data-hook="email_content"] textarea')
-    @textarea.parent().slideDown() # un-hide textarea
+    @$textarea = @$table.find('[data-hook="email_content"] textarea')
+    @$textarea.parent().slideDown() if @$textarea.parent().is(':hidden')
 
     @collectProducts()
     @populateField()
