@@ -16,6 +16,7 @@ jQuery ->
   $(".variant_autocomplete").select2
     placeholder: "Select a variant"
     minimumInputLength: 4
+    allowClear: true
     ajax:
       url: Spree.routes.variants_search
       datatype: "json"
@@ -53,6 +54,7 @@ jQuery ->
 
     # Reset fields
     $fieldset.data("sku", "").data("name", "").data("qty", 0)
+    $fieldset.find('.variant_autocomplete').select2('data', null)
 
     return false
 
