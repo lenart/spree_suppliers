@@ -3,11 +3,15 @@ jQuery ->
   new_row_template = Handlebars.compile($('#suppliers-new-product-row').html())
   input_field = $("<input type='text' value='' />")
 
-  $('table.index td.quantity').on 'click', ->
-    if ($(this).children('input').size() == 0)
-      field = input_field.clone()
-      field.val($(this).html())
-      $(this).html field
+  $(document)
+    .on 'click', 'table.index td.quantity', ->
+      if ($(this).children('input').size() == 0)
+        field = input_field.clone()
+        field.val($(this).html())
+        $(this).html field
+        $(this).find('input').focus()
+    .on 'blur', 'table.index td.quantity input', (el) ->
+      $(this).parent().html $(this).val()
 
   $(".variant_autocomplete").select2
     placeholder: "Select a variant"
