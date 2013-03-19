@@ -1,3 +1,13 @@
+- # Include template for autocomplete fields
+= render :partial => "spree/admin/variants/autocomplete", :formats => [:js]
+
+%script#suppliers-new-product-row{type: 'text/template'}
+  %tr
+    %td {{name}}
+    %td {{sku}}
+    %td.quantity {{qty}}
+
+
 - content_for :page_title do
   Popis naročenih izdelkov
 
@@ -26,7 +36,6 @@
       %div.four.columns
         .field
           = label_tag nil, t(:order_number)
-          = # f.text_field :number_cont
           = text_field_tag "q[order_number_gt]", @starting_order.try(:number)
 
       .clear
@@ -34,66 +43,57 @@
         = button t(:search), 'icon-search'
 
 
-%div
-  %h2 Datum izpiska:
-  = Date.today
+#suppliers_report
+  %h2.suppliers_report_title
+    Datum izpiska:
+    = Date.today
 
-  - if @starting_order
-    %p
-      Od naročila št.
-      %strong= @starting_order.number
-      dalje
+  .suppliers_report_applied_filters
+    - if @starting_order
+      %p
+        Od naročila št.
+        %strong= @starting_order.number
+        dalje
+    - else
+      %p
+        - unless params[:q][:completed_at_gt].blank? && params[:q][:completed_at_lt].blank?
+          %strong Naročila
+          - unless params[:q][:completed_at_gt].blank?
+            od
+            = params[:q][:completed_at_gt]
+          - unless params[:q][:completed_at_lt].blank?
+            do
+            = params[:q][:completed_at_lt]
+
+
+  - if @product_quantities.empty?
+    .no-objects-found
+      = t(:no_results)
   - else
-    %p
-      - unless params[:q][:completed_at_gt].blank? && params[:q][:completed_at_lt].blank?
-        %strong Naročila
-        - unless params[:q][:completed_at_gt].blank?
-          od
-          = params[:q][:completed_at_gt]
-        - unless params[:q][:completed_at_lt].blank?
-          do
-          = params[:q][:completed_at_lt]
+    - @product_quantities.each do |supplier_id, product_pairs|
 
+      = content_tag :div, class: 'supplier_products_table' do
+        %h3.supplier_name= Spree::Supplier.where(id: supplier_id).pluck(:name).first
+        %table.index
+          %colgroup
+            %col{:style => ""}
+            %col{:style => "width: 10%;"}
+            %col{:style => "width: 10%;"}
+          %thead
+            %tr
+              %th Izdelek
+              %th Nensi
+              %th Količina
+          %tbody
+            - product_pairs.each_pair do |pid, qty|
+              - product = Spree::Product.find(pid)
+              %tr{:class => "#{cycle('odd', 'even')}"}
+                %td= product.name
+                %td= product.sku
+                %td.quantity= qty
+        - reset_cycle
 
-- if @product_quantities.empty?
-  .no-objects-found
-    = t(:no_results)
-- else
-  - @product_quantities.each do |supplier_id, product_pairs|
-    = content_tag :div, class: 'supplier_products_table', style: "margin-bottom: 100px" do
-      %h3= Spree::Supplier.where(id: supplier_id).pluck(:name).first
-      %table.index
-        %colgroup
-          %col{:style => ""}
-          %col{:style => "width: 10%;"}
-          %col{:style => "width: 10%;"}
-        %thead
-          %tr
-            %th Izdelek
-            %th Nensi
-            %th Količina
-        %tbody
-          - product_pairs.each_pair do |pid, qty|
-            - product = Spree::Product.find(pid)
-            %tr{:class => "#{cycle('odd', 'even')}"}
-              %td= product.name
-              %td= product.sku
-              %td.quantity= qty
-      - reset_cycle
-
-      = render partial: "new_product_row_form", locals: { supplier_id: supplier_id }
-
-- # Include template for autocomplete fields
-= render :partial => "spree/admin/variants/autocomplete", :formats => [:js]
-
-
-%script#suppliers-new-product-row{type: 'text/template'}
-  %tr
-    %td {{name}}
-    %td {{sku}}
-    %td.quantity {{qty}}
-
-
+        = render partial: "new_product_row_form", locals: { supplier_id: supplier_id }
 
 
 %div{style: 'margin-top: 100px'}

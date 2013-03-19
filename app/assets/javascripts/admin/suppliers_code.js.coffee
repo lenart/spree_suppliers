@@ -1,6 +1,5 @@
+# http://ivaynberg.github.com/select2/#documentation
 jQuery ->
-  # http://ivaynberg.github.com/select2/#documentation
-
   new_row_template = Handlebars.compile($('#suppliers-new-product-row').html())
   input_field = $("<input type='text' value='' />")
 
@@ -46,3 +45,43 @@ jQuery ->
     $fieldset.data("sku", "").data("name", "").data("qty", 0)
 
     return false
+
+  $('[data-hook="send_button"]').on "click", ->
+    window.report = new SuppliersEmailReport $(this).parents('.supplier_products_table')
+    return false
+
+
+class SuppliersEmailReport
+
+  template: Handlebars.compile("{{sku}}\t{{qty}}\t{{name}}\n")
+
+  constructor: (table) ->
+    @products = []
+
+    @$table = table
+    @textarea = @$table.find('[data-hook="email_content"] textarea')
+    @textarea.parent().slideDown() # un-hide textarea
+
+    @collectProducts()
+    @populateField()
+
+  parseTableRow: (row) ->
+    cells = row.children
+    product =
+      name: cells[0].innerHTML
+      sku:  cells[1].innerHTML
+      qty:  cells[2].innerHTML
+
+    @products.push product
+
+  collectProducts: (context) ->
+    @$table.find('table.index tbody tr').each (index, el) =>
+      @parseTableRow(el)
+
+  populateField: ->
+    order_text = ""
+    for product in @products
+      order_text += @template(product)
+    
+    @textarea.val order_text
+

@@ -2,7 +2,7 @@
   <fieldset>
     <legend align="center"><%= t(:add_product) %></legend>
 
-    <div data-hook="add_product_name" class="field eight columns alpha">
+    <div data-hook="add_product_name" class="field seven columns alpha">
       <%= label_tag "supplier_{supplier_id}_add_product_name", t(:name_or_sku) %>
       <%= hidden_field_tag "supplier_#{supplier_id}_add_variant_id", "", :class => "variant_autocomplete fullwidth" %>
       <div class="options_placeholder"></div>
@@ -13,13 +13,21 @@
       <%= number_field_tag "supplier_#{supplier_id}_add_quantity",  1, :min => 0 %>
     </div>
     
-    <div data-hook="add_button" class="actions two columns omega">
+    <div data-hook="add_button" class="actions three columns">
       <%= link_to_with_icon 'icon-plus', t(:add), "#",
-                  :class => 'button fullwidth add_line_item_to_order' %>
+                  :class => 'button fullwidth' %>
     </div>
 
-    <div class="align-right" style="margin-top: 28px">
-      <%= button_link_to "Pripravi email sporočilo", "return false", { icon: 'icon-email', "data-hook" => "send_product_supplier_email" } %>
+    <div data-hook="send_button" class="actions four columns omega">
+      <%= link_to_with_icon 'icon-email', "Pripravi email sporočilo", "#", "data-hook" => "send_product_supplier_email", class: "button fullwidth" %>
+    </div>
+
+    <div data-hook="email_content" class="field" style="display: none">
+      <%= text_area_tag "op-#{supplier_id}", nil, rows: 10, class: "fullwidth" %>
+      <div>
+        Sporočilo pošlji na
+        <%= mail_to "vstavimo@pravi-mail.si", "vstavimo@pravi-mail.si" %>
+      </div>
     </div>
 
   </fieldset>
