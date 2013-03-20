@@ -3,6 +3,7 @@ jQuery ->
   new_row_template = Handlebars.compile($('#suppliers-new-product-row').html())
   input_field = $("<input type='text' value='' />")
 
+  # Hooks used for changing existing records quantities
   $(document)
     .on 'click', 'table.index td.quantity', ->
       if ($(this).children('input').size() == 0)
@@ -13,6 +14,8 @@ jQuery ->
     .on 'blur', 'table.index td.quantity input', (el) ->
       $(this).parent().html $(this).val()
 
+  # Because we need to process returned data we use a custom hook
+  # Since we only use it here it is not made as a jQuery plugin ($.fn.variantAutocomplete)
   $(".variant_autocomplete").select2
     placeholder: "Select a variant"
     minimumInputLength: 4
@@ -35,6 +38,8 @@ jQuery ->
         name: product.name
       product.name
 
+  # Handle clicks on "Add button"
+  # Add variant name, sku and qty to the table
   $('[data-hook="add_button"]').on "click", ->
     $fieldset = $(this).parents("fieldset")
     sku = $fieldset.data("sku")
@@ -62,7 +67,23 @@ jQuery ->
     window.report = new SuppliersEmailReport $(this).parents('.supplier_products_table')
     return false
 
+  $('[data-hook="send_email_button"]').on "click", ->
+    content = $(this).siblings('textarea').val()
+    encoded_content = encodeURI($('<div/>').text(content).html())
 
+    email = $(this).siblings('[data-email]').data('email')
+    composeGmail(email, 'Naročilo', encoded_content)
+    return false
+
+
+# Function we use to compose email with javascript call in a popup window
+composeGmail = (to, subject, body) ->
+  window.open('https://mail.google.com/mail?view=cm&tf=0&su=' + subject + '&to=' + to + '&body=' + body ,'gmailForm','scrollbars=yes,width=680,height=510,top=175,left=75,status=no,resizable=yes')
+  return false
+
+
+# Parse the table of variants, get values and put them in a textarea
+# Also handles encoding/decoding of HTML/plaintext
 class SuppliersEmailReport
 
   template: Handlebars.compile("{{sku}}\t{{qty}}\t{{name}}\n")

@@ -3,14 +3,14 @@
     <legend align="center"><%= t(:add_product) %></legend>
 
     <div data-hook="add_product_name" class="field seven columns alpha">
-      <%= label_tag "supplier_{supplier_id}_add_product_name", t(:name_or_sku) %>
-      <%= hidden_field_tag "supplier_#{supplier_id}_add_variant_id", "", :class => "variant_autocomplete fullwidth" %>
+      <%= label_tag "supplier_{supplier.id}_add_product_name", t(:name_or_sku) %>
+      <%= hidden_field_tag "supplier_#{supplier.id}_add_variant_id", "", :class => "variant_autocomplete fullwidth" %>
       <div class="options_placeholder"></div>
     </div>
     
     <div data-hook="add_quantity" class="field two columns">
-      <%= label_tag "supplier_#{supplier_id}_add_quantity", t(:qty) %>
-      <%= number_field_tag "supplier_#{supplier_id}_add_quantity",  1, :min => 0 %>
+      <%= label_tag "supplier_#{supplier.id}_add_quantity", t(:qty) %>
+      <%= number_field_tag "supplier_#{supplier.id}_add_quantity",  1, :min => 0 %>
     </div>
     
     <div data-hook="add_button" class="actions three columns">
@@ -19,15 +19,22 @@
     </div>
 
     <div data-hook="send_button" class="actions four columns omega">
-      <%= link_to_with_icon 'icon-email', "Pripravi email sporočilo", "#", "data-hook" => "send_product_supplier_email", class: "button fullwidth" %>
+      <%= link_to_with_icon 'icon-file', "Pripravi naročilo", "#", "data-hook" => "send_product_supplier_email", class: "button fullwidth" %>
     </div>
 
     <div data-hook="email_content" class="field" style="display: none">
-      <%= text_area_tag "op-#{supplier_id}", nil, rows: 10, class: "fullwidth" %>
-      <div>
-        Sporočilo pošlji na
-        <%= mail_to "vstavimo@pravi-mail.si", "vstavimo@pravi-mail.si" %>
-      </div>
+      <%= text_area_tag "supplier_#{supplier.id}_email_content", nil, rows: 10, class: "fullwidth" %>
+      <%= hidden_field_tag "supplier_#{supplier.id}_email", supplier.email, data: { email: supplier.email } %>
+      <% if supplier.email.blank? %>
+        Proizvajalec nima vnešenega podatka o email naslovu. 
+        <%= link_to "Uredi proizvajalca", edit_admin_supplier_path(supplier) %>    
+      <% else %>
+        <%= link_to_with_icon 'icon-email', "Pošlji email", "#", "data-hook" => 'send_email_button', class: 'button' %>
+        <div>
+          Sporočilo pošlji na
+          <%= mail_to supplier.email %>
+        </div>
+      <% end %>
     </div>
 
   </fieldset>
