@@ -69,7 +69,7 @@ jQuery ->
 
   $('[data-hook="send_email_button"]').on "click", ->
     content = $(this).siblings('textarea').val()
-    encoded_content = encodeURI($('<div/>').text(content).html())
+    encoded_content = encodeURIComponent(content)
 
     email = $(this).siblings('[data-email]').data('email')
     composeGmail(email, 'Naročilo', encoded_content)
