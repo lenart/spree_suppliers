@@ -1,3 +1,11 @@
+<script type="text/template" id="supplier_<%= supplier.id %>_email_template" class="supplier_email_template">
+<%= supplier.email_header %>
+{{#each products}}
+{{qty}}x {{{name}}} {{#if sku}}(SKU: {{sku}}){{/if}}{{/each}}
+
+<%= supplier.email_footer -%>
+</script>
+
 <div class="add-line-item">
   <fieldset>
     <legend align="center"><%= t(:add_product) %></legend>

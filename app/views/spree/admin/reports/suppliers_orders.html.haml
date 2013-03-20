@@ -73,7 +73,7 @@
     - @product_quantities.each do |supplier_id, product_pairs|
 
       = content_tag :div, class: 'supplier_products_table' do
-        - supplier = Spree::Supplier.where(id: supplier_id).select([:id, :name, :email]).first
+        - supplier = Spree::Supplier.where(id: supplier_id).first
         %h3.supplier_name= supplier.name
         %table.index
           %colgroup
@@ -94,10 +94,7 @@
                 %td.quantity= qty
         - reset_cycle
 
-        = render partial: "new_product_row_form", locals: { supplier: supplier }
-
-
-
+        = render "form_add_and_report", supplier: supplier
 
 - if false
 

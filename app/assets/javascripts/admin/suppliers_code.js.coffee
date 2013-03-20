@@ -1,7 +1,7 @@
 # http://ivaynberg.github.com/select2/#documentation
 jQuery ->
   new_row_template = Handlebars.compile($('#suppliers-new-product-row').html())
-  input_field = $("<input type='text' value='' />")
+  input_field = $("<input type='number' value='' />")
 
   # Hooks used for changing existing records quantities
   $(document)
@@ -86,8 +86,6 @@ composeGmail = (to, subject, body) ->
 # Also handles encoding/decoding of HTML/plaintext
 class SuppliersEmailReport
 
-  template: Handlebars.compile("{{sku}}\t{{qty}}\t{{name}}\n")
-
   constructor: (table) ->
     @products = []
 
@@ -95,13 +93,15 @@ class SuppliersEmailReport
     @$textarea = @$table.find('[data-hook="email_content"] textarea')
     @$textarea.parent().slideDown() if @$textarea.parent().is(':hidden')
 
+    @template = Handlebars.compile(@$table.find('.supplier_email_template').html())
+
     @collectProducts()
     @populateField()
 
   parseTableRow: (row) ->
     cells = row.children
     product =
-      name: $('<div/>').html(cells[0].innerHTML).text() # decode HTML
+      name: $('<div/>').html(cells[0].innerHTML).text() # decode HTML to plaintext
       sku:  cells[1].innerHTML
       qty:  cells[2].innerHTML
 
@@ -112,9 +112,5 @@ class SuppliersEmailReport
       @parseTableRow(el)
 
   populateField: ->
-    order_text = ""
-    for product in @products
-      order_text += @template(product)
-    
-    @$textarea.val $('<div/>').html(order_text).text() # decode HTML
+    @$textarea.val @template(products: @products)
 
