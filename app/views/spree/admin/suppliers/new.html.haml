@@ -1,9 +1,10 @@
 = render :partial => 'spree/admin/shared/configuration_menu'
 = render :partial => 'spree/admin/shared/product_sub_menu'
-= render :partial => 'spree/shared/error_messages', :locals => { :target => @supplier }
 
 - content_for :page_title do
   = t(:new_supplier)
+
+= render :partial => 'spree/shared/error_messages', :locals => { :target => @supplier }
 
 = form_for [:admin, @supplier] do |f|
   %fieldset

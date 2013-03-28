@@ -1,8 +1,10 @@
-.row{"data-hook" => "admin_state_form_fields"}
+.row{"data-hook" => "admin_suppliers_form_fields"}
   .alpha.six.columns
     = f.field_container :name do
-      = f.label :name, t(:supplier_name)
+      = f.label :name, raw(t(:supplier_name) + content_tag(:span, ' *', :class => 'required'))
       = f.text_field :name, :class => 'fullwidth'
+      = f.error_message_on :name
+
     = f.field_container :description do
       = f.label :description, t(:description)
       = f.text_area :description, {:rows => 13, :class => 'fullwidth'}
@@ -11,10 +13,15 @@
   .omega.six.columns
     = f.field_container :email do
       = f.label :email, t(:supplier_email)
-      = f.text_field :email, :class => 'fullwidth'
+      = f.email_field :email, :class => 'fullwidth'
+      = f.error_message_on :email
+
     = f.field_container :email_header do
       = f.label :email_header, t(:supplier_email_header)
       = f.text_area :email_header, {:rows => 6, :class => 'fullwidth'}
+      = f.error_message_on :email_header
+
     = f.field_container :email_footer do
       = f.label :email_footer, t(:supplier_email_footer)
       = f.text_area :email_footer, {:rows => 6, :class => 'fullwidth'}
+      = f.error_message_on :email_footer
