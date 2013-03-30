@@ -1,15 +1,20 @@
-SpreeSuppliers
+Spree Suppliers
 ==============
 
 A Lekarnar.com module for reveiewing purchased items and ordering additional new items from suppliers.
 
-
 Installation
 =============
 
+Add gem to your Gemfile
+
     gem 'spree_suppliers'
 
-Add javascript and stylesheets to your assets
+Run the generators to copy assets and migrations.
+
+    rails g spree_suppliers:install
+    
+Add javascript and stylesheets to your assets (remove them from javascripts/all.js and stylesheets/all.css if they were added by the generator).
 
     # app/assets/admin/all.js
     //= require admin/spree_suppliers
