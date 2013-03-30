@@ -59,7 +59,8 @@ jQuery ->
 
     # Reset fields
     $fieldset.data("sku", "").data("name", "").data("qty", 0)
-    $fieldset.find('.variant_autocomplete').select2('data', null)
+    # $fieldset.find('.variant_autocomplete').select2('data', null)
+    $fieldset.find('.variant_autocomplete').select2('data', {})
 
     return false
 
