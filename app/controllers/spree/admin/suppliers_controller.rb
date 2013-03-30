@@ -2,8 +2,6 @@
 module Spree
   module Admin
     class SuppliersController < ResourceController
-      respond_to :html
-      
     end
   end
 end
