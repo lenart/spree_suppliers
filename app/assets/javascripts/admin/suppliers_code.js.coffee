@@ -5,18 +5,18 @@ jQuery ->
 
   # Hooks used for changing existing records quantities
   $(document)
-    .on 'click', 'table.index td.quantity', ->
+    .on 'click', '#suppliers_report table.index td.quantity', ->
       if ($(this).children('input').size() == 0)
         field = input_field.clone()
         field.val($(this).html())
         $(this).html field
         $(this).find('input').focus()
-    .on 'blur', 'table.index td.quantity input', (el) ->
+    .on 'blur', '#suppliers_report table.index td.quantity input', (el) ->
       $(this).parent().html $(this).val()
 
   # Because we need to process returned data we use a custom hook
   # Since we only use it here it is not made as a jQuery plugin ($.fn.variantAutocomplete)
-  $(".variant_autocomplete").select2
+  $("#suppliers_report .variant_autocomplete").select2
     placeholder: "Select a variant"
     minimumInputLength: 4
     allowClear: true
@@ -40,7 +40,7 @@ jQuery ->
 
   # Handle clicks on "Add button"
   # Add variant name, sku and qty to the table
-  $('[data-hook="add_button"]').on "click", ->
+  $('#suppliers_report [data-hook="add_button"]').on "click", ->
     $fieldset = $(this).parents("fieldset")
     sku = $fieldset.data("sku")
     name = $fieldset.data("name")
@@ -63,11 +63,11 @@ jQuery ->
 
     return false
 
-  $('[data-hook="send_button"]').on "click", ->
+  $('#suppliers_report [data-hook="send_button"]').on "click", ->
     window.report = new SuppliersEmailReport $(this).parents('.supplier_products_table')
     return false
 
-  $('[data-hook="send_email_button"]').on "click", ->
+  $('#suppliers_report [data-hook="send_email_button"]').on "click", ->
     content = $(this).siblings('textarea').val()
     encoded_content = encodeURIComponent(content)
 
