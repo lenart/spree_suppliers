@@ -34,20 +34,21 @@ jQuery ->
     # Text displayed in the select menu
     formatSelection: (product) ->
       $(@element).parents("fieldset").data
-        sku: product.sku
-        name: product.name
+        product:
+          sku: product.sku
+          name: product.name
       product.name
 
   # Handle clicks on "Add button"
   # Add variant name, sku and qty to the table
   $('#suppliers_report [data-hook="add_button"]').on "click", ->
     $fieldset = $(this).parents("fieldset")
-    sku = $fieldset.data("sku")
-    name = $fieldset.data("name")
-    qty = $fieldset.find('[data-hook="add_quantity"] input').val()
+    product = $fieldset.data("product")
 
     # If no product was chosen from dropdown sku will not exist and we shouldn't add anything
-    return false unless sku
+    return false unless product
+
+    product.qty = $fieldset.find('[data-hook="add_quantity"] input').val()
 
     # Hide email content if visible
     textarea = $(this).parents('.supplier_products_table').find('[data-hook="email_content"]')
@@ -55,12 +56,12 @@ jQuery ->
     textarea.slideUp() if textarea.is(':visible')
 
     $table = $(this).parents('.supplier_products_table').find('tbody')
-    $table.append(new_row_template({name: name, sku: sku, qty: qty}))
+    $table.append new_row_template(product)
 
     # Reset fields
-    $fieldset.data("sku", "").data("name", "").data("qty", 0)
-    # $fieldset.find('.variant_autocomplete').select2('data', null)
-    $fieldset.find('.variant_autocomplete').select2('data', {})
+    $fieldset.find('input[type="hidden"].variant_autocomplete')
+      .data('product', null)
+      .select2('data', null)
 
     return false
 
